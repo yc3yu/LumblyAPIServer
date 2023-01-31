@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title: "Lumbly API Server"
+  description: "An API for the Lumbly system"
+  version: "1.0.0"
+
+servers:
+  - url: "/api"
+
+components:
+  schemas:
+    Problem:
+      type: "object"
+      required:
+        - name
+      properties:
+        icon:
+          type: "string"
+        name:
+          type: "string"
+    Results:
+      type: "object"
+      required:
+        - id
+      properties:
+        id:
+          type: "integer"
+        exercises:
+          type: "array"
+        summaryGraphTitle:
+          type: "string"
+        summaryGraphXLabel:
+          type: "string"
+        summaryGraphYLabel:
+          type: "string"
+        problems:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Problem"
+  parameters:
+    id:
+      name: "id"
+      description: "Identifier for this set of results"
+      in: path
+      required: True
+      schema:
+        type: "integer"
+
+paths:
+  /results:
+    get:
+      operationId: "results.read_all"
+      tags:
+        - "Results"
+      summary: "Read the results"
+      responses:
+        "200":
+          description: "Successfully read results"
+    post:
+      operationId: "results.create"
+      tags:
+        - Results
+      summary: "Create a set of results"
+      requestBody:
+          description: "Results to create"
+          required: True
+          content:
+            application/json:
+              schema:
+                x-body-name: "results"
+                $ref: "#/components/schemas/Results"
+      responses:
+        "201":
+          description: "Successfully created results"
+  /results/{id}:
+    get:
+      operationId: "results.read_one"
+      tags:
+        - Results
+      summary: "Read one set of results"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: "Successfully read results"
+    put:
+      tags:
+        - Results
+      operationId: "results.update"
+      summary: "Update a set of results"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: "Successfully updated results"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-body-name: "results"
+              $ref: "#/components/schemas/Results"
+    delete:
+      tags:
+        - Results
+      operationId: "results.delete"
+      summary: "Delete a set of results"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: "Successfully deleted results"
